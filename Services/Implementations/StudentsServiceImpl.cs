@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project_Planner_API.Data;
 using Project_Planner_API.Data.Entities;
+using Project_Planner_API.Exceptions;
 using Project_Planner_API.Models;
 
 namespace Project_Planner_API.Services.Implementations
@@ -23,7 +24,7 @@ namespace Project_Planner_API.Services.Implementations
         {
             if (await _context.Students.AnyAsync(s => s.Email == student.Email))
             {
-                throw new Exception("Email already exists");
+                throw new FieldAlreadyExistException(400, "Email already exist");
             }
 
             var studentRegistration = new StudentEntity

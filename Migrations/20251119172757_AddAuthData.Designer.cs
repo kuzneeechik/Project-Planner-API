@@ -12,7 +12,7 @@ using Project_Planner_API.Data;
 namespace Project_Planner_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20251119150335_AddAuthData")]
+    [Migration("20251119172757_AddAuthData")]
     partial class AddAuthData
     {
         /// <inheritdoc />

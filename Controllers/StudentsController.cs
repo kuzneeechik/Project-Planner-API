@@ -15,18 +15,11 @@ namespace Project_Planner_API.Controllers
             _studentService = studentService;
         }
 
-        [HttpGet("register")]
+        [HttpPost("register")]
         public async Task<IActionResult> StudentRegistration(
             [FromBody] StudentRegistrationModel student)
         {
-            try
-            {
-                return Ok(_studentService.StudentRegistration(student));
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
+            return Ok(await _studentService.StudentRegistration(student));
         }
     }
 }
