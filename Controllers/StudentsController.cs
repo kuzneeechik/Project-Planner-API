@@ -8,18 +8,24 @@ namespace Project_Planner_API.Controllers
     [Route("[controller]")]
     public class StudentsController : ControllerBase
     {
-        private readonly IStudentsService _studentService;
+        private readonly IStudentsService _studentsService;
 
-        public StudentsController(IStudentsService studentService)
+        public StudentsController(IStudentsService studentsService)
         {
-            _studentService = studentService;
+            _studentsService = studentsService;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> StudentRegistration(
             [FromBody] StudentRegistrationModel student)
         {
-            return Ok(await _studentService.StudentRegistration(student));
+            return Ok(await _studentsService.StudentRegistration(student));
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> StudentLogIn([FromBody] LogInModel student)
+        {
+            return Ok(await _studentsService.StudentLogIn(student));
         }
     }
 }

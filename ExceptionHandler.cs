@@ -17,6 +17,11 @@ namespace Project_Planner_API
                 problemDetails.Code = customException.Code;
                 problemDetails.Details = customException.Details;
             }
+            else if (exception is UnauthorizedAccessException unauthorized)
+            {
+                problemDetails.Code = 401;
+                problemDetails.Details = "Email or password is incorrect";
+            }
             else
             {
                 problemDetails.Code = 500;
