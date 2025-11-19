@@ -2,7 +2,7 @@
 {
     public class StudentEntity
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = new Guid();
         public required string Name { get; set; }
         public required string Email { get; set; }
         public required string PasswordHash { get; set; }
