@@ -51,14 +51,14 @@ var connection = builder.Configuration.GetConnectionString("ProjectPlanner");
 
 builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(connection));
 
-builder.Services.AddTransient<IStudentsService, StudentsServiceImpl>();
-
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
+builder.Services.AddTransient<IStudentsService, StudentsServiceImpl>();
 builder.Services.AddTransient<TokenUtility>();
+builder.Services.AddScoped<ISubjectsService, SubjectsServiceImpl>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
