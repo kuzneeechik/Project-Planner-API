@@ -20,7 +20,7 @@ namespace Project_Planner_API
             else if (exception is UnauthorizedAccessException unauthorized)
             {
                 problemDetails.Code = 401;
-                problemDetails.Details = "Email or password is incorrect";
+                problemDetails.Details = "Authorize fail";
             }
             else
             {

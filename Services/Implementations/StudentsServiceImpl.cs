@@ -3,28 +3,19 @@ using Project_Planner_API.Data;
 using Project_Planner_API.Data.Entities;
 using Project_Planner_API.Exceptions;
 using Project_Planner_API.Models;
+using Project_Planner_API.Utilities;
 
 namespace Project_Planner_API.Services.Implementations
 {
     public class StudentsServiceImpl : IStudentsService
     {
         private readonly DataContext _context;
-        private readonly ITokensService _tokensService;
+        private readonly TokenUtility _tokenUtility;
 
-        public StudentsServiceImpl(DataContext context, ITokensService tokensService)
+        public StudentsServiceImpl(DataContext context, TokenUtility tokenUtility)
         {
             _context = context;
-            _tokensService = tokensService;
-        }
-
-        private string HashPassword(string password)
-        {
-            return BCrypt.Net.BCrypt.HashPassword(password);
-        }
-
-        private bool CheckPassword(string hashedPassword, string enteredPassword)
-        {
-            return BCrypt.Net.BCrypt.Verify(enteredPassword, hashedPassword);
+            _tokenUtility = tokenUtility;
         }
 
         public async Task<IdModel> StudentRegistration(StudentRegistrationModel student)
@@ -38,7 +29,7 @@ namespace Project_Planner_API.Services.Implementations
             {
                 Name = student.Name,
                 Email = student.Email,
-                PasswordHash = HashPassword(student.Password)
+                PasswordHash = AuthUtility.HashPassword(student.Password)
             };
 
             _context.Students.Add(studentRegistration);
@@ -57,7 +48,7 @@ namespace Project_Planner_API.Services.Implementations
                 throw new UnauthorizedAccessException();
             }
 
-            var IsPasswordRight = CheckPassword(studentRegistration.PasswordHash,
+            var IsPasswordRight = AuthUtility.CheckPassword(studentRegistration.PasswordHash,
                 student.Password);
 
             if (!IsPasswordRight)
@@ -65,7 +56,7 @@ namespace Project_Planner_API.Services.Implementations
                 throw new UnauthorizedAccessException();
             }
 
-            return new TokenModel { AccessToken =  _tokensService
+            return new TokenModel { AccessToken =  _tokenUtility
                 .GetToken(studentRegistration.Id) };
         }
     }

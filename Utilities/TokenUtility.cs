@@ -4,15 +4,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Project_Planner_API.Services.Implementations
+namespace Project_Planner_API.Utilities
 {
-    public class TokensServiceImpl : ITokensService
+    public class TokenUtility
     {
         private readonly JwtSecurityTokenHandler _tokenHandler
             = new JwtSecurityTokenHandler();
         private readonly JwtOptions _jwtOptions;
 
-        public TokensServiceImpl(IOptions<JwtOptions> jwtOptions)
+        public TokenUtility(IOptions<JwtOptions> jwtOptions)
         {
             _jwtOptions = jwtOptions.Value;
         }

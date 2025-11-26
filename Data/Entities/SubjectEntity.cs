@@ -5,6 +5,6 @@
         public Guid Id { get; set; }
         public required string Name { get; set; }
         public required ResultEntity Result { get; set; }
-        public required TeamEntity Team { get; set; }
+        public List<StudentEntity> Team { get; set; } = new List<StudentEntity>();
     }
 }

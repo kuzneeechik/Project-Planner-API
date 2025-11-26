@@ -6,6 +6,7 @@ using Project_Planner_API;
 using Project_Planner_API.Data;
 using Project_Planner_API.Services;
 using Project_Planner_API.Services.Implementations;
+using Project_Planner_API.Utilities;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,12 +52,13 @@ var connection = builder.Configuration.GetConnectionString("ProjectPlanner");
 builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(connection));
 
 builder.Services.AddTransient<IStudentsService, StudentsServiceImpl>();
-builder.Services.AddTransient<ITokensService, TokensServiceImpl>();
 
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+
+builder.Services.AddTransient<TokenUtility>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

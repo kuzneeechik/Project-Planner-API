@@ -6,7 +6,6 @@
         public required string Name { get; set; }
         public required string Email { get; set; }
         public required string PasswordHash { get; set; }
-        public List<TeamEntity> Teams { get; set; } = new List<TeamEntity>();
-        public List<TaskEntity> Tasks { get; set; } = new List<TaskEntity>();
+        public List<SubjectEntity> Subjects { get; set; } = new List<SubjectEntity>();
     }
 }
