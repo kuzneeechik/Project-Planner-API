@@ -59,6 +59,7 @@ builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddTransient<IStudentsService, StudentsServiceImpl>();
 builder.Services.AddTransient<TokenUtility>();
 builder.Services.AddScoped<ISubjectsService, SubjectsServiceImpl>();
+builder.Services.AddScoped<ITeamsService, TeamsServiceImpl>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
