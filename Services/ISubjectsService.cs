@@ -11,5 +11,6 @@ namespace Project_Planner_API.Services
             Guid studentId);
         public Task UpdateSubject(Guid subjectId, SubjectUpdateModel subject);
         public Task DeleteSubject(Guid subjectId);
+        public Task<List<StudentModel>> GetTeam(Guid subjectId);
     }
 }

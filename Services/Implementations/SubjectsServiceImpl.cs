@@ -89,6 +89,7 @@ namespace Project_Planner_API.Services.Implementations
             };
 
             student.Subjects.Add(newSubject);
+            newSubject.Team.Add(student);
 
             _context.Results.Add(newResult);
             _context.Subjects.Add(newSubject);
@@ -129,6 +130,28 @@ namespace Project_Planner_API.Services.Implementations
 
             _context.Subjects.Remove(subject);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<StudentModel>> GetTeam(Guid subjectId)
+        {
+            var subject = await _context.Subjects
+                .Include(s => s.Team)
+                .FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            if (subject == null)
+            {
+                throw new NotFoundException(404, "Subject not found");
+            }
+
+            var team = subject.Team
+                .Select(s => new StudentModel
+                {
+                    Name = s.Name
+                })
+                .OrderBy(s => s.Name)
+                .ToList();
+
+            return team;
         }
     }
 }
