@@ -62,5 +62,39 @@ namespace Project_Planner_API.Services.Implementations
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task EntryStudent(
+            Guid studentId,
+            Guid subjectId,
+            EntryModel code)
+        {
+            var student = await _context.Students
+                .Include(s => s.Subjects)
+                .FirstOrDefaultAsync(s => s.Id == studentId);
+
+            if (student == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            var subject = await _context.Subjects
+                .Include(s => s.Team)
+                .FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            if (subject == null)
+            {
+                throw new NotFoundException(404, "Subject not found");
+            }
+
+            if (subject.Code != code.Code)
+            {
+                throw new EntryErrorException(400, "Wrong subject code");
+            }
+
+            subject.Team.Add(student);
+            student.Subjects.Add(subject);
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

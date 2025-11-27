@@ -31,6 +31,7 @@ namespace Project_Planner_API.Services.Implementations
             var subjects = student.Subjects
                 .Select(s => new SubjectShortModel
                 { 
+                    Id = s.Id,
                     Name = s.Name,
                     Result = s.Result.Name,
                     Deadline = s.Result.Deadline,
@@ -56,6 +57,7 @@ namespace Project_Planner_API.Services.Implementations
             var currentSubject = new SubjectModel
             {
                 Name = subject.Name,
+                Code = subject.Code,
                 Result = subject.Result.Name,
                 ResultDescription = subject.Result.Description,
                 ResultDeadline = subject.Result.Deadline
