@@ -5,7 +5,7 @@ using Project_Planner_API.Services;
 namespace Project_Planner_API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("student")]
     public class StudentsController : ControllerBase
     {
         private readonly IStudentsService _studentsService;

@@ -42,6 +42,28 @@ namespace Project_Planner_API.Services.Implementations
             return subjects;
         }
 
+        public async Task<SubjectModel> GetSubjectsById(Guid subjectId)
+        {
+            var subject = await _context.Subjects
+                .Include(s => s.Result)
+                .FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            if (subject == null)
+            {
+                throw new NotFoundException(404, "Subject not found");
+            }
+
+            var currentSubject = new SubjectModel
+            {
+                Name = subject.Name,
+                Result = subject.Result.Name,
+                ResultDescription = subject.Result.Description,
+                ResultDeadline = subject.Result.Deadline
+            };
+
+            return currentSubject;
+        }
+
         public async Task<IdModel> CreateSubject(SubjectCreateModel subject, Guid studentId)
         {
             var newResult = new ResultEntity
@@ -76,23 +98,11 @@ namespace Project_Planner_API.Services.Implementations
             return new IdModel { Id = newSubject.Id };
         }
 
-        public async Task UpdateSubject(
-            Guid subjectId,
-            SubjectUpdateModel subject,
-            Guid studentId)
+        public async Task UpdateSubject(Guid subjectId, SubjectUpdateModel subject)
         {
-            var student = await _context.Students
-                .FirstOrDefaultAsync(s => s.Id == studentId);
-
-            if (student == null)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
             var updatedSubject = _context.Subjects
                 .Include(s => s.Result)
-                .FirstOrDefault(s => s.Id == subjectId &&
-                    s.Team.Any(st => st.Id == studentId));
+                .FirstOrDefault(s => s.Id == subjectId);
 
             if (updatedSubject == null)
             {
@@ -104,6 +114,20 @@ namespace Project_Planner_API.Services.Implementations
             updatedSubject.Result.Description = subject.ResultDescription;
             updatedSubject.Result.Deadline = subject.ResultDeadline;
 
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteSubject(Guid subjectId)
+        {
+            var subject = await _context.Subjects
+                .FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            if (subject == null)
+            {
+                throw new NotFoundException(404, "Subject not found");
+            }
+
+            _context.Subjects.Remove(subject);
             await _context.SaveChangesAsync();
         }
     }

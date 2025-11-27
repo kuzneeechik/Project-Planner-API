@@ -8,7 +8,7 @@ using Project_Planner_API.Utilities;
 namespace Project_Planner_API.Controllers
 {   
     [ApiController]
-    [Route("[controller]")]
+    [Route("subject")]
     public class SubjectsController : ControllerBase
     {
         private readonly ISubjectsService _subjectService;
@@ -28,7 +28,14 @@ namespace Project_Planner_API.Controllers
         }
 
         [Authorize]
-        [HttpPost("subject")]
+        [HttpGet("get/{id}")]
+        public async Task<IActionResult> GetSubjectById([FromRoute] Guid id)
+        {
+            return Ok(await _subjectService.GetSubjectsById(id));
+        }
+
+        [Authorize]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateSubject([FromBody] SubjectCreateModel subject)
         {
             var studentId = AuthUtility.GetUserId(User);
@@ -38,14 +45,21 @@ namespace Project_Planner_API.Controllers
         }
 
         [Authorize]
-        [HttpPut("subject/{id}")]
+        [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateSubject(
             [FromRoute] Guid id,
             [FromBody] SubjectUpdateModel subject)
         {
-            var studentId = AuthUtility.GetUserId(User);
+            await _subjectService.UpdateSubject(id, subject);
 
-            await _subjectService.UpdateSubject(id, subject, studentId);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteSubject([FromRoute] Guid id)
+        {
+            await _subjectService.DeleteSubject(id);
 
             return Ok();
         }
