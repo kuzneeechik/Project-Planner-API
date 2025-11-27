@@ -59,5 +59,24 @@ namespace Project_Planner_API.Services.Implementations
             return new TokenModel { AccessToken =  _tokenUtility
                 .GetToken(studentRegistration.Id) };
         }
+
+        public async Task<ProfileModel> GetProfile(Guid studentId)
+        {
+            var student = await _context.Students
+                .FirstOrDefaultAsync(s => s.Id == studentId);
+
+            if (student == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            var profile = new ProfileModel
+            {
+                Name = student.Name,
+                Email = student.Email
+            };
+
+            return profile;
+        }
     }
 }

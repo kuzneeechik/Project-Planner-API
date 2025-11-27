@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Project_Planner_API.Models;
 using Project_Planner_API.Services;
+using Project_Planner_API.Utilities;
 
 namespace Project_Planner_API.Controllers
 {
@@ -26,6 +27,14 @@ namespace Project_Planner_API.Controllers
         public async Task<IActionResult> StudentLogIn([FromBody] LogInModel student)
         {
             return Ok(await _studentsService.StudentLogIn(student));
+        }
+
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            var studentId = AuthUtility.GetUserId(User);
+
+            return Ok(await _studentsService.GetProfile(studentId));
         }
     }
 }
