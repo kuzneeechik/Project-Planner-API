@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Project_Planner_API.Services;
+using Project_Planner_API.Utilities;
 
 namespace Project_Planner_API.Controllers
 {
@@ -30,6 +31,17 @@ namespace Project_Planner_API.Controllers
             [FromHeader] Guid subjectId)
         {
             await _teamsService.DeleteStudent(id, subjectId);
+
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpDelete("exit/{id}")]
+        public async Task<IActionResult> ExitStudent([FromRoute] Guid id)
+        {
+            var studentId = AuthUtility.GetUserId(User);
+
+            await _teamsService.DeleteStudent(studentId, id);
 
             return Ok();
         }

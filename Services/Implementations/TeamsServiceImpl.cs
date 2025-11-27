@@ -40,7 +40,8 @@ namespace Project_Planner_API.Services.Implementations
         {
             var subject = await _context.Subjects
                 .Include(s => s.Team)
-                .FirstOrDefaultAsync(s => s.Id == subjectId);
+                .FirstOrDefaultAsync(s => s.Id == subjectId &&
+                    s.Team.Any(st => st.Id == studentId));
 
             if (subject == null)
             {
