@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using Project_Planner_API.Data;
 using Project_Planner_API.Data.Entities;
+using Project_Planner_API.Exceptions;
 using Project_Planner_API.Models;
 
 namespace Project_Planner_API.Services.Implementations
@@ -40,7 +42,7 @@ namespace Project_Planner_API.Services.Implementations
             return subjects;
         }
 
-        public async Task CreateSubject(SubjectCreateModel subject, Guid studentId)
+        public async Task<IdModel> CreateSubject(SubjectCreateModel subject, Guid studentId)
         {
             var newResult = new ResultEntity
             {
@@ -68,6 +70,39 @@ namespace Project_Planner_API.Services.Implementations
 
             _context.Results.Add(newResult);
             _context.Subjects.Add(newSubject);
+
+            await _context.SaveChangesAsync();
+
+            return new IdModel { Id = newSubject.Id };
+        }
+
+        public async Task UpdateSubject(
+            Guid subjectId,
+            SubjectUpdateModel subject,
+            Guid studentId)
+        {
+            var student = await _context.Students
+                .FirstOrDefaultAsync(s => s.Id == studentId);
+
+            if (student == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            var updatedSubject = _context.Subjects
+                .Include(s => s.Result)
+                .FirstOrDefault(s => s.Id == subjectId &&
+                    s.Team.Any(st => st.Id == studentId));
+
+            if (updatedSubject == null)
+            {
+                throw new NotFoundException(404, "Subject not found");
+            }
+
+            updatedSubject.Name = subject.Name;
+            updatedSubject.Result.Name = subject.Result;
+            updatedSubject.Result.Description = subject.ResultDescription;
+            updatedSubject.Result.Deadline = subject.ResultDeadline;
 
             await _context.SaveChangesAsync();
         }

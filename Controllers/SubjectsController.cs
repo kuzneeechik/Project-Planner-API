@@ -29,13 +29,25 @@ namespace Project_Planner_API.Controllers
 
         [Authorize]
         [HttpPost("subject")]
-        public async Task<IActionResult> CreateSubject(SubjectCreateModel subject)
+        public async Task<IActionResult> CreateSubject([FromBody] SubjectCreateModel subject)
         {
             var studentId = AuthUtility.GetUserId(User);
 
-            await _subjectService.CreateSubject(subject, studentId);
+            return Created("", await _subjectService
+                .CreateSubject(subject, studentId));
+        }
 
-            return Created();
+        [Authorize]
+        [HttpPut("subject/{id}")]
+        public async Task<IActionResult> UpdateSubject(
+            [FromRoute] Guid id,
+            [FromBody] SubjectUpdateModel subject)
+        {
+            var studentId = AuthUtility.GetUserId(User);
+
+            await _subjectService.UpdateSubject(id, subject, studentId);
+
+            return Ok();
         }
     }
 }
