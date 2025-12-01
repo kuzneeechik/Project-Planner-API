@@ -8,5 +8,6 @@ namespace Project_Planner_API.Services
         public Task<List<TaskShortModel>> GetTasks(Guid subjectId);
         public Task<TaskModel> GetTaskById(Guid taskId);
         public Task<IdModel> CreateTask(TaskCreateModel task, Guid subjectId);
+        public Task<IdModel> AddSubtask(TaskCreateModel task, Guid parentId);
     }
 }

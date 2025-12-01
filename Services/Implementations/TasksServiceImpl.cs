@@ -104,7 +104,50 @@ namespace Project_Planner_API.Services.Implementations
                 Result = subject.Result
             };
 
-            
+            _context.Tasks.Add(newTask);
+            await _context.SaveChangesAsync();
+
+            return new IdModel { Id = newTask.Id };
+        }
+
+        public async Task<IdModel> AddSubtask(TaskCreateModel task, Guid parentId)
+        {
+            var parentTask = await _context.Tasks
+                .Include(t => t.Result)
+                .FirstOrDefaultAsync(t => t.Id == parentId);
+
+            if (parentTask == null)
+            {
+                throw new NotFoundException(404, "Task not found");
+            }
+
+            var responsibleStudents = new List<StudentEntity>();
+
+            for (int i = 0; i < task.ResponsibleStudents.Count; i++)
+            {
+                var student = await _context.Students
+                    .FirstOrDefaultAsync(s => s.Id == task.ResponsibleStudents[i]);
+
+                if (student == null)
+                {
+                    throw new NotFoundException(404, "Student not found");
+                }
+
+                responsibleStudents.Add(student);
+            }
+
+            var newTask = new TaskEntity
+            {
+                Number = task.Number,
+                Name = task.Name,
+                Description = task.Description,
+                Deadline = task.Deadline,
+                ResponsibleStudents = responsibleStudents,
+                Result = parentTask.Result,
+                ParentTask = parentTask
+            };
+
+            parentTask.SubTasks.Add(newTask);
 
             _context.Tasks.Add(newTask);
             await _context.SaveChangesAsync();

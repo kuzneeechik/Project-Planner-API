@@ -35,5 +35,13 @@ namespace Project_Planner_API.Controllers
         {
             return Created("", await _tasksService.CreateTask(task, id));
         }
+
+        [HttpPost("add/{id}")]
+        public async Task<IActionResult> AddSubtask(
+            [FromBody] TaskCreateModel subtask,
+            [FromRoute] Guid id)
+        {
+            return Created("", await _tasksService.AddSubtask(subtask, id));
+        }
     }
 }
