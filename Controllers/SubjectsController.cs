@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Project_Planner_API.Models;
+using Project_Planner_API.Models.SubjectModels;
 using Project_Planner_API.Services;
 using Project_Planner_API.Utilities;
 

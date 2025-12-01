@@ -12,8 +12,8 @@ using Project_Planner_API.Data;
 namespace Project_Planner_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20251127142903_AddSubjectCode")]
-    partial class AddSubjectCode
+    [Migration("20251201100431_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,7 +96,8 @@ namespace Project_Planner_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ResultId");
+                    b.HasIndex("ResultId")
+                        .IsUnique();
 
                     b.ToTable("Subjects", (string)null);
                 });
@@ -117,12 +118,15 @@ namespace Project_Planner_API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<Guid>("ResultId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<Guid?>("TaskEntityId")
                         .HasColumnType("uuid");
@@ -161,8 +165,8 @@ namespace Project_Planner_API.Migrations
             modelBuilder.Entity("Project_Planner_API.Data.Entities.SubjectEntity", b =>
                 {
                     b.HasOne("Project_Planner_API.Data.Entities.ResultEntity", "Result")
-                        .WithMany()
-                        .HasForeignKey("ResultId")
+                        .WithOne("Subject")
+                        .HasForeignKey("Project_Planner_API.Data.Entities.SubjectEntity", "ResultId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -197,6 +201,11 @@ namespace Project_Planner_API.Migrations
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Project_Planner_API.Data.Entities.ResultEntity", b =>
+                {
+                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("Project_Planner_API.Data.Entities.TaskEntity", b =>

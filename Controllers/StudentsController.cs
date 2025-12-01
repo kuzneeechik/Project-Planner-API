@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Project_Planner_API.Models;
+using Project_Planner_API.Models.StudentModels;
 using Project_Planner_API.Services;
 using Project_Planner_API.Utilities;
 

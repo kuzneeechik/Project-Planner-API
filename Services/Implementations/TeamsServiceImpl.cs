@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project_Planner_API.Data;
 using Project_Planner_API.Exceptions;
-using Project_Planner_API.Models;
+using Project_Planner_API.Models.StudentModels;
+using Project_Planner_API.Models.SubjectModels;
 
 namespace Project_Planner_API.Services.Implementations
 {

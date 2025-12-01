@@ -1,4 +1,4 @@
-﻿namespace Project_Planner_API.Models
+﻿namespace Project_Planner_API.Models.StudentModels
 {
     public class StudentModel
     {

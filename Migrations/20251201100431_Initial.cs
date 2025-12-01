@@ -30,6 +30,7 @@ namespace Project_Planner_API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Code = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     ResultId = table.Column<Guid>(type: "uuid", nullable: false),
                     CrearedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -50,8 +51,9 @@ namespace Project_Planner_API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Number = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     ResultId = table.Column<Guid>(type: "uuid", nullable: false),
                     TaskEntityId = table.Column<Guid>(type: "uuid", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
@@ -130,7 +132,8 @@ namespace Project_Planner_API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Subjects_ResultId",
                 table: "Subjects",
-                column: "ResultId");
+                column: "ResultId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_ResultId",

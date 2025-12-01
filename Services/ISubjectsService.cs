@@ -1,4 +1,5 @@
 ﻿using Project_Planner_API.Models;
+using Project_Planner_API.Models.SubjectModels;
 
 namespace Project_Planner_API.Services
 {

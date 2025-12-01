@@ -8,8 +8,13 @@ using Project_Planner_API.Services;
 using Project_Planner_API.Services.Implementations;
 using Project_Planner_API.Utilities;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters
+        .Add(new JsonStringEnumConverter()));
 
 // Add services to the container.
 
@@ -60,6 +65,7 @@ builder.Services.AddTransient<IStudentsService, StudentsServiceImpl>();
 builder.Services.AddTransient<TokenUtility>();
 builder.Services.AddScoped<ISubjectsService, SubjectsServiceImpl>();
 builder.Services.AddScoped<ITeamsService, TeamsServiceImpl>();
+builder.Services.AddScoped<ITasksService, TasksServiceImpl>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

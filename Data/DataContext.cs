@@ -15,6 +15,12 @@ namespace Project_Planner_API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SubjectEntity>().ToTable("Subjects");
+            
+            modelBuilder.Entity<SubjectEntity>()
+                .HasOne(s => s.Result)
+                .WithOne(r => r.Subject)
+                .HasForeignKey<SubjectEntity>(s => s.ResultId);
+
             modelBuilder.Entity<ResultEntity>().ToTable("Results");
             modelBuilder.Entity<StudentEntity>().ToTable("Students");
             modelBuilder.Entity<TaskEntity>().ToTable("Tasks");
