@@ -154,5 +154,39 @@ namespace Project_Planner_API.Services.Implementations
 
             return new IdModel { Id = newTask.Id };
         }
+
+        public async Task UpdateTask(Guid taskId, TaskUpdateModel task)
+        {
+            var updateTask = await _context.Tasks
+                .FirstOrDefaultAsync(t => t.Id == taskId);
+
+            if (updateTask == null)
+            {
+                throw new NotFoundException(404, "Task not found");
+            }
+
+            updateTask.Name = task.Name;
+            updateTask.Description = task.Description;
+            updateTask.Deadline = task.Deadline;
+
+            var responsibleStudents = new List<StudentEntity>();
+
+            for (int i = 0; i < task.ResponsibleStudents.Count; i++)
+            {
+                var student = await _context.Students
+                    .FirstOrDefaultAsync(s => s.Id == task.ResponsibleStudents[i]);
+
+                if (student == null)
+                {
+                    throw new NotFoundException(404, "Student not found");
+                }
+
+                responsibleStudents.Add(student);
+            }
+
+            updateTask.ResponsibleStudents = responsibleStudents;
+
+            await _context.SaveChangesAsync();
+        }
     }
 }
