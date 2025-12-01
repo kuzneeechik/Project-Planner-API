@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Project_Planner_API.Models.TaskModels;
 using Project_Planner_API.Services;
 
 namespace Project_Planner_API.Controllers
@@ -25,6 +26,14 @@ namespace Project_Planner_API.Controllers
         public async Task<IActionResult> GetTaskById([FromRoute] Guid id)
         {
             return Ok(await _tasksService.GetTaskById(id));
+        }
+
+        [HttpPost("create/{id}")]
+        public async Task<IActionResult> CreateTask(
+            [FromBody] TaskCreateModel task,
+            [FromRoute] Guid id)
+        {
+            return Created("", await _tasksService.CreateTask(task, id));
         }
     }
 }

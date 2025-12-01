@@ -29,6 +29,7 @@ namespace Project_Planner_API.Services.Implementations
             var team = subject.Team
                 .Select(s => new StudentModel
                 {
+                    Id = s.Id,
                     Name = s.Name
                 })
                 .OrderBy(s => s.Name)
