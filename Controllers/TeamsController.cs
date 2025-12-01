@@ -19,7 +19,7 @@ namespace Project_Planner_API.Controllers
         }
 
         [Authorize]
-        [HttpGet("team/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetTeam([FromRoute] Guid id)
         {
             return Ok(await _teamsService.GetTeam(id));

@@ -20,5 +20,11 @@ namespace Project_Planner_API.Controllers
         {
             return Ok(await _tasksService.GetTasks(id));
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTaskById([FromRoute] Guid id)
+        {
+            return Ok(await _tasksService.GetTaskById(id));
+        }
     }
 }

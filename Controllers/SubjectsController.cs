@@ -27,7 +27,7 @@ namespace Project_Planner_API.Controllers
         }
 
         [Authorize]
-        [HttpGet("get/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetSubjectById([FromRoute] Guid id)
         {
             return Ok(await _subjectService.GetSubjectsById(id));
