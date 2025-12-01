@@ -61,12 +61,7 @@ namespace Project_Planner_API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("TaskEntityId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TaskEntityId");
 
                     b.ToTable("Students", (string)null);
                 });
@@ -155,11 +150,19 @@ namespace Project_Planner_API.Migrations
                     b.ToTable("StudentEntitySubjectEntity");
                 });
 
-            modelBuilder.Entity("Project_Planner_API.Data.Entities.StudentEntity", b =>
+            modelBuilder.Entity("StudentEntityTaskEntity", b =>
                 {
-                    b.HasOne("Project_Planner_API.Data.Entities.TaskEntity", null)
-                        .WithMany("ResponsibleStudents")
-                        .HasForeignKey("TaskEntityId");
+                    b.Property<Guid>("ResponsibleStudentsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TasksId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ResponsibleStudentsId", "TasksId");
+
+                    b.HasIndex("TasksId");
+
+                    b.ToTable("StudentEntityTaskEntity");
                 });
 
             modelBuilder.Entity("Project_Planner_API.Data.Entities.SubjectEntity", b =>
@@ -205,6 +208,21 @@ namespace Project_Planner_API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("StudentEntityTaskEntity", b =>
+                {
+                    b.HasOne("Project_Planner_API.Data.Entities.StudentEntity", null)
+                        .WithMany()
+                        .HasForeignKey("ResponsibleStudentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Project_Planner_API.Data.Entities.TaskEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Project_Planner_API.Data.Entities.ResultEntity", b =>
                 {
                     b.Navigation("Subject");
@@ -212,8 +230,6 @@ namespace Project_Planner_API.Migrations
 
             modelBuilder.Entity("Project_Planner_API.Data.Entities.TaskEntity", b =>
                 {
-                    b.Navigation("ResponsibleStudents");
-
                     b.Navigation("SubTasks");
                 });
 #pragma warning restore 612, 618

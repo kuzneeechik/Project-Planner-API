@@ -55,7 +55,8 @@ namespace Project_Planner_API.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     ResultId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TaskEntityId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ParentTaskId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Deadline = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -69,8 +70,8 @@ namespace Project_Planner_API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tasks_Tasks_TaskEntityId",
-                        column: x => x.TaskEntityId,
+                        name: "FK_Tasks_Tasks_ParentTaskId",
+                        column: x => x.ParentTaskId,
                         principalTable: "Tasks",
                         principalColumn: "Id");
                 });
@@ -136,14 +137,14 @@ namespace Project_Planner_API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tasks_ParentTaskId",
+                table: "Tasks",
+                column: "ParentTaskId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tasks_ResultId",
                 table: "Tasks",
                 column: "ResultId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tasks_TaskEntityId",
-                table: "Tasks",
-                column: "TaskEntityId");
         }
 
         /// <inheritdoc />

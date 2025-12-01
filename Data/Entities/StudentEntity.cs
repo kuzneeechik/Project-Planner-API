@@ -7,5 +7,6 @@
         public required string Email { get; set; }
         public required string PasswordHash { get; set; }
         public List<SubjectEntity> Subjects { get; set; } = new List<SubjectEntity>();
+        public List<TaskEntity> Tasks { get; set; } = new List<TaskEntity>();
     }
 }

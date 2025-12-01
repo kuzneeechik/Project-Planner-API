@@ -12,8 +12,8 @@ using Project_Planner_API.Data;
 namespace Project_Planner_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20251201100431_Initial")]
-    partial class Initial
+    [Migration("20251201155152_AddStudentTasks")]
+    partial class AddStudentTasks
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,12 +64,7 @@ namespace Project_Planner_API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("TaskEntityId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TaskEntityId");
 
                     b.ToTable("Students", (string)null);
                 });
@@ -108,6 +103,9 @@ namespace Project_Planner_API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime?>("Deadline")
                         .HasColumnType("timestamp with time zone");
 
@@ -122,20 +120,20 @@ namespace Project_Planner_API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("ParentTaskId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("ResultId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("TaskEntityId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ResultId");
+                    b.HasIndex("ParentTaskId");
 
-                    b.HasIndex("TaskEntityId");
+                    b.HasIndex("ResultId");
 
                     b.ToTable("Tasks", (string)null);
                 });
@@ -155,11 +153,19 @@ namespace Project_Planner_API.Migrations
                     b.ToTable("StudentEntitySubjectEntity");
                 });
 
-            modelBuilder.Entity("Project_Planner_API.Data.Entities.StudentEntity", b =>
+            modelBuilder.Entity("StudentEntityTaskEntity", b =>
                 {
-                    b.HasOne("Project_Planner_API.Data.Entities.TaskEntity", null)
-                        .WithMany("ResponsibleStudents")
-                        .HasForeignKey("TaskEntityId");
+                    b.Property<Guid>("ResponsibleStudentsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TasksId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ResponsibleStudentsId", "TasksId");
+
+                    b.HasIndex("TasksId");
+
+                    b.ToTable("StudentEntityTaskEntity");
                 });
 
             modelBuilder.Entity("Project_Planner_API.Data.Entities.SubjectEntity", b =>
@@ -175,15 +181,17 @@ namespace Project_Planner_API.Migrations
 
             modelBuilder.Entity("Project_Planner_API.Data.Entities.TaskEntity", b =>
                 {
+                    b.HasOne("Project_Planner_API.Data.Entities.TaskEntity", "ParentTask")
+                        .WithMany("SubTasks")
+                        .HasForeignKey("ParentTaskId");
+
                     b.HasOne("Project_Planner_API.Data.Entities.ResultEntity", "Result")
                         .WithMany()
                         .HasForeignKey("ResultId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Project_Planner_API.Data.Entities.TaskEntity", null)
-                        .WithMany("SubTasks")
-                        .HasForeignKey("TaskEntityId");
+                    b.Navigation("ParentTask");
 
                     b.Navigation("Result");
                 });
@@ -203,6 +211,21 @@ namespace Project_Planner_API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("StudentEntityTaskEntity", b =>
+                {
+                    b.HasOne("Project_Planner_API.Data.Entities.StudentEntity", null)
+                        .WithMany()
+                        .HasForeignKey("ResponsibleStudentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Project_Planner_API.Data.Entities.TaskEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Project_Planner_API.Data.Entities.ResultEntity", b =>
                 {
                     b.Navigation("Subject");
@@ -210,8 +233,6 @@ namespace Project_Planner_API.Migrations
 
             modelBuilder.Entity("Project_Planner_API.Data.Entities.TaskEntity", b =>
                 {
-                    b.Navigation("ResponsibleStudents");
-
                     b.Navigation("SubTasks");
                 });
 #pragma warning restore 612, 618

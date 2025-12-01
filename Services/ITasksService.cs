@@ -11,5 +11,6 @@ namespace Project_Planner_API.Services
         public Task<IdModel> AddSubtask(TaskCreateModel task, Guid parentId);
         public Task UpdateTask(Guid taskId, TaskUpdateModel task);
         public Task ChangeTaskStatus(Guid taskId, StatusModel status);
+        public Task DeleteTask(Guid taskId);
     }
 }

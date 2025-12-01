@@ -12,8 +12,8 @@ using Project_Planner_API.Data;
 namespace Project_Planner_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20251201103042_AddParentTask")]
-    partial class AddParentTask
+    [Migration("20251201153536_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,6 +107,9 @@ namespace Project_Planner_API.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("Deadline")
                         .HasColumnType("timestamp with time zone");

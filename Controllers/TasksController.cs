@@ -63,5 +63,13 @@ namespace Project_Planner_API.Controllers
 
             return Ok();
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTask([FromRoute] Guid id)
+        {
+            await _tasksService.DeleteTask(id);
+
+            return Ok();
+        }
     }
 }

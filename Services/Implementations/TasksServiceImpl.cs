@@ -5,6 +5,7 @@ using Project_Planner_API.Exceptions;
 using Project_Planner_API.Models;
 using Project_Planner_API.Models.TaskModels;
 using System.Security.Cryptography.Xml;
+using System.Threading.Tasks;
 
 namespace Project_Planner_API.Services.Implementations
 {
@@ -115,6 +116,7 @@ namespace Project_Planner_API.Services.Implementations
         {
             var parentTask = await _context.Tasks
                 .Include(t => t.Result)
+                .Include(t => t.SubTasks)
                 .FirstOrDefaultAsync(t => t.Id == parentId);
 
             if (parentTask == null)
@@ -203,6 +205,34 @@ namespace Project_Planner_API.Services.Implementations
             task.Status = status.Status;
             task.CreatedAt = DateTime.UtcNow;
 
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteTask(Guid taskId)
+        {
+            var task = await _context.Tasks
+                .Include(t => t.SubTasks)
+                .FirstOrDefaultAsync(t => t.Id == taskId);
+
+            if (task == null)
+            {
+                throw new NotFoundException(404, "Task not found");
+            }
+
+            if (task.SubTasks.Count != 0)
+            {
+                for (int i = 0; i < task.SubTasks.Count; i++)
+                {
+                    _context.Tasks.Remove(task.SubTasks[i]);
+                }
+            }
+
+            if (task.ParentTask != null)
+            {
+                task.ParentTask.SubTasks.Remove(task);
+            }
+
+            _context.Tasks.Remove(task);
             await _context.SaveChangesAsync();
         }
     }
