@@ -27,10 +27,10 @@ namespace Project_Planner_API.Controllers
         }
 
         [Authorize]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetSubjectById([FromRoute] Guid id)
+        [HttpGet("{subjectId}")]
+        public async Task<IActionResult> GetSubjectById([FromRoute] Guid subjectId)
         {
-            return Ok(await _subjectService.GetSubjectsById(id));
+            return Ok(await _subjectService.GetSubjectsById(subjectId));
         }
 
         [Authorize]
@@ -44,21 +44,21 @@ namespace Project_Planner_API.Controllers
         }
 
         [Authorize]
-        [HttpPut("update/{id}")]
+        [HttpPut("update/{subjectId}")]
         public async Task<IActionResult> UpdateSubject(
-            [FromRoute] Guid id,
+            [FromRoute] Guid subjectId,
             [FromBody] SubjectUpdateModel subject)
         {
-            await _subjectService.UpdateSubject(id, subject);
+            await _subjectService.UpdateSubject(subjectId, subject);
 
             return Ok();
         }
 
         [Authorize]
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteSubject([FromRoute] Guid id)
+        [HttpDelete("delete/{subjectId}")]
+        public async Task<IActionResult> DeleteSubject([FromRoute] Guid subjectId)
         {
-            await _subjectService.DeleteSubject(id);
+            await _subjectService.DeleteSubject(subjectId);
 
             return Ok();
         }

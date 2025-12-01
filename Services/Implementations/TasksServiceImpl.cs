@@ -4,8 +4,6 @@ using Project_Planner_API.Data.Entities;
 using Project_Planner_API.Exceptions;
 using Project_Planner_API.Models;
 using Project_Planner_API.Models.TaskModels;
-using System.Security.Cryptography.Xml;
-using System.Threading.Tasks;
 
 namespace Project_Planner_API.Services.Implementations
 {
@@ -20,10 +18,18 @@ namespace Project_Planner_API.Services.Implementations
 
         public async Task<List<TaskShortModel>> GetTasks(Guid subjectId)
         {
+            var subject = await _context.Subjects
+                .FirstOrDefaultAsync(s => s.Id == subjectId);
+
+            if (subject == null)
+            {
+                throw new NotFoundException(404, "Subject not found");
+            }
+
             var tasks = await _context.Tasks
                 .Include(t => t.Result)
                 .ThenInclude(r => r.Subject)
-                .Where(t => t.Result.Subject!.Id == subjectId)
+                .Where(t => t.Result.Subject == subject)
                 .OrderBy(t => t.CreatedAt)
                 .Select(t => new TaskShortModel
                 {

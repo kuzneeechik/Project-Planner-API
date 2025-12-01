@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Project_Planner_API.Models.SubjectModels;
 using Project_Planner_API.Services;
@@ -19,43 +18,43 @@ namespace Project_Planner_API.Controllers
         }
 
         [Authorize]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetTeam([FromRoute] Guid id)
+        [HttpGet("{subjectId}")]
+        public async Task<IActionResult> GetTeam([FromRoute] Guid subjectId)
         {
-            return Ok(await _teamsService.GetTeam(id));
+            return Ok(await _teamsService.GetTeam(subjectId));
         }
 
         [Authorize]
-        [HttpDelete("student/{id}")]
+        [HttpDelete("student/{studentId}")]
         public async Task<IActionResult> DeleteStudent(
-            [FromRoute] Guid id,
+            [FromRoute] Guid studentId,
             [FromHeader] Guid subjectId)
         {
-            await _teamsService.DeleteStudent(id, subjectId);
+            await _teamsService.DeleteStudent(studentId, subjectId);
 
             return Ok();
         }
 
         [Authorize]
-        [HttpDelete("exit/{id}")]
-        public async Task<IActionResult> ExitStudent([FromRoute] Guid id)
+        [HttpDelete("exit/{subjectId}")]
+        public async Task<IActionResult> ExitStudent([FromRoute] Guid subjectId)
         {
             var studentId = AuthUtility.GetUserId(User);
 
-            await _teamsService.DeleteStudent(studentId, id);
+            await _teamsService.DeleteStudent(studentId, subjectId);
 
             return Ok();
         }
 
         [Authorize]
-        [HttpPost("entry/{id}")]
+        [HttpPost("entry/{subjectId}")]
         public async Task<IActionResult> EntryStudent(
             [FromBody] EntryModel code,
-            [FromRoute] Guid id)
+            [FromRoute] Guid subjectId)
         {
             var studentId = AuthUtility.GetUserId(User);
 
-            await _teamsService.EntryStudent(studentId, id, code);
+            await _teamsService.EntryStudent(studentId, subjectId, code);
 
             return Ok();
         }
