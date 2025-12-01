@@ -53,5 +53,15 @@ namespace Project_Planner_API.Controllers
 
             return Ok();
         }
+
+        [HttpPatch("status/{id}")]
+        public async Task<IActionResult> ChangeTaskStatus(
+            [FromRoute] Guid id,
+            [FromBody] StatusModel status)
+        {
+            await _tasksService.ChangeTaskStatus(id, status);
+
+            return Ok();
+        }
     }
 }

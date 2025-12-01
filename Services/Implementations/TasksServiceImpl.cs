@@ -23,6 +23,7 @@ namespace Project_Planner_API.Services.Implementations
                 .Include(t => t.Result)
                 .ThenInclude(r => r.Subject)
                 .Where(t => t.Result.Subject!.Id == subjectId)
+                .OrderBy(t => t.CreatedAt)
                 .Select(t => new TaskShortModel
                 {
                     Id = t.Id,
@@ -185,6 +186,22 @@ namespace Project_Planner_API.Services.Implementations
             }
 
             updateTask.ResponsibleStudents = responsibleStudents;
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ChangeTaskStatus(Guid taskId, StatusModel status)
+        {
+            var task = await _context.Tasks
+                .FirstOrDefaultAsync(t => t.Id == taskId);
+
+            if (task == null)
+            {
+                throw new NotFoundException(404, "Task not found");
+            }
+
+            task.Status = status.Status;
+            task.CreatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
         }
