@@ -47,16 +47,12 @@ namespace Project_Planner_API.Controllers
         }
 
         [Authorize]
-        [HttpPost("entry/{subjectId}")]
-        public async Task<IActionResult> EntryStudent(
-            [FromBody] EntryModel code,
-            [FromRoute] Guid subjectId)
+        [HttpPost("entry")]
+        public async Task<IActionResult> EntryStudent([FromBody] EntryModel code)
         {
             var studentId = AuthUtility.GetUserId(User);
 
-            await _teamsService.EntryStudent(studentId, subjectId, code);
-
-            return Ok();
+            return Ok(await _teamsService.EntryStudent(studentId, code));
         }
     }
 }

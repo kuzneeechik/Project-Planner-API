@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project_Planner_API.Data;
 using Project_Planner_API.Exceptions;
+using Project_Planner_API.Models;
 using Project_Planner_API.Models.StudentModels;
 using Project_Planner_API.Models.SubjectModels;
 
@@ -65,10 +66,7 @@ namespace Project_Planner_API.Services.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task EntryStudent(
-            Guid studentId,
-            Guid subjectId,
-            EntryModel code)
+        public async Task<IdModel> EntryStudent(Guid studentId, EntryModel code)
         {
             var student = await _context.Students
                 .Include(s => s.Subjects)
@@ -81,22 +79,19 @@ namespace Project_Planner_API.Services.Implementations
 
             var subject = await _context.Subjects
                 .Include(s => s.Team)
-                .FirstOrDefaultAsync(s => s.Id == subjectId);
+                .FirstOrDefaultAsync(s => s.Code == code.Code);
 
             if (subject == null)
             {
-                throw new NotFoundException(404, "Subject not found");
-            }
-
-            if (subject.Code != code.Code)
-            {
-                throw new EntryErrorException(400, "Wrong subject code");
+                throw new NotFoundException(400, "Wrong subject code");
             }
 
             subject.Team.Add(student);
             student.Subjects.Add(subject);
 
             await _context.SaveChangesAsync();
+
+            return new IdModel { Id = subject.Id };
         }
     }
 }
