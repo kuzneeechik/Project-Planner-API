@@ -167,6 +167,7 @@ namespace Project_Planner_API.Services.Implementations
         public async Task UpdateTask(Guid taskId, TaskUpdateModel task)
         {
             var updateTask = await _context.Tasks
+                .Include(t => t.ResponsibleStudents)
                 .FirstOrDefaultAsync(t => t.Id == taskId);
 
             if (updateTask == null)
