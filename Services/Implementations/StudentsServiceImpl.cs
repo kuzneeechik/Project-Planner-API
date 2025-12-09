@@ -73,6 +73,7 @@ namespace Project_Planner_API.Services.Implementations
 
             var profile = new ProfileModel
             {
+                Id = studentId,
                 Name = student.Name,
                 Email = student.Email
             };
