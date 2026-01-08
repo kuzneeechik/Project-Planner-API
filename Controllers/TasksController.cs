@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Project_Planner_API.Models.TaskModels;
 using Project_Planner_API.Services;
+using Project_Planner_API.Utilities;
 
 namespace Project_Planner_API.Controllers
 {
@@ -17,9 +18,13 @@ namespace Project_Planner_API.Controllers
         }
 
         [HttpGet("tasks/{subjectId}")]
-        public async Task<IActionResult> GetTasks([FromRoute] Guid subjectId)
+        public async Task<IActionResult> GetTasks(
+            [FromRoute] Guid subjectId,
+            [FromQuery] bool isMine, bool notAssigned)
         {
-            return Ok(await _tasksService.GetTasks(subjectId));
+            var studentId = AuthUtility.GetUserId(User);
+
+            return Ok(await _tasksService.GetTasks(subjectId, studentId, isMine, notAssigned));
         }
 
         [HttpGet("{taskId}")]

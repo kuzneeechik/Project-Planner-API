@@ -16,7 +16,11 @@ namespace Project_Planner_API.Services.Implementations
             _context = context;
         }
 
-        public async Task<List<TaskShortModel>> GetTasks(Guid subjectId)
+        public async Task<List<TaskShortModel>> GetTasks(
+            Guid subjectId,
+            Guid studentId,
+            bool isMine,
+            bool notAssigned)
         {
             var subject = await _context.Subjects
                 .FirstOrDefaultAsync(s => s.Id == subjectId);
@@ -26,11 +30,36 @@ namespace Project_Planner_API.Services.Implementations
                 throw new NotFoundException(404, "Subject not found");
             }
 
-            var tasks = await _context.Tasks
+            var tasks = _context.Tasks
                 .Include(t => t.Result)
                 .ThenInclude(r => r.Subject)
+                .Include(t => t.ResponsibleStudents)
                 .Where(t => t.Result.Subject == subject)
-                .OrderBy(t => t.CreatedAt)
+                .OrderBy(t => t.CreatedAt);
+
+            if (isMine)
+            {
+                var student = await _context.Students
+                    .FirstOrDefaultAsync(s => s.Id == studentId);
+
+                if (student == null)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                tasks = tasks
+                    .Where(t => t.ResponsibleStudents.Contains(student))
+                    .OrderBy(t => t.CreatedAt);
+            }
+
+            if (notAssigned)
+            {
+                tasks = tasks
+                    .Where(t => t.ResponsibleStudents.Count == 0)
+                    .OrderBy(t => t.CreatedAt);
+            }
+
+            var resultTasks = await tasks
                 .Select(t => new TaskShortModel
                 {
                     Id = t.Id,
@@ -40,7 +69,7 @@ namespace Project_Planner_API.Services.Implementations
                 })
                 .ToListAsync();
 
-            return tasks;
+            return resultTasks;
         }
 
         public async Task<TaskModel> GetTaskById(Guid taskId)
