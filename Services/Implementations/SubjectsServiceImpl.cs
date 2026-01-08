@@ -69,6 +69,12 @@ namespace Project_Planner_API.Services.Implementations
 
         public async Task<IdModel> CreateSubject(SubjectCreateModel subject, Guid studentId)
         {
+            if (subject.ResultDeadline != null &&
+                subject.ResultDeadline < DateTime.UtcNow)
+            {
+                throw new WrongDateException(400, "Deadline is uncorrect");
+            }
+
             var newResult = new ResultEntity
             {
                 Name = subject.Result,
@@ -113,6 +119,12 @@ namespace Project_Planner_API.Services.Implementations
             if (updatedSubject == null)
             {
                 throw new NotFoundException(404, "Subject not found");
+            }
+
+            if (subject.ResultDeadline != null &&
+                subject.ResultDeadline < DateTime.UtcNow)
+            {
+                throw new WrongDateException(400, "Deadline is uncorrect");
             }
 
             updatedSubject.Name = subject.Name;

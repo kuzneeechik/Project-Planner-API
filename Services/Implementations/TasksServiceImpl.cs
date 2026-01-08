@@ -87,6 +87,13 @@ namespace Project_Planner_API.Services.Implementations
                 throw new NotFoundException(404, "Subject not found");
             }
 
+            if (task.Deadline != null &&
+                (task.Deadline < DateTime.UtcNow || 
+                task.Deadline > subject.Result.Deadline))
+            {
+                throw new WrongDateException(400, "Deadline is uncorrect");
+            }
+
             var responsibleStudents = new List<StudentEntity>();
 
             for (int i = 0; i < task.ResponsibleStudents.Count; i++)
@@ -128,6 +135,13 @@ namespace Project_Planner_API.Services.Implementations
             if (parentTask == null)
             {
                 throw new NotFoundException(404, "Task not found");
+            }
+
+            if (task.Deadline != null &&
+                (task.Deadline < DateTime.UtcNow ||
+                (task.Deadline > parentTask.Deadline && parentTask.Deadline != null)))
+            {
+                throw new WrongDateException(400, "Deadline is uncorrect");
             }
 
             var responsibleStudents = new List<StudentEntity>();
@@ -173,6 +187,14 @@ namespace Project_Planner_API.Services.Implementations
             if (updateTask == null)
             {
                 throw new NotFoundException(404, "Task not found");
+            }
+
+            if (task.Deadline != null &&
+                (task.Deadline < DateTime.UtcNow ||
+                (updateTask.ParentTask != null && updateTask.ParentTask.Deadline != null &&
+                task.Deadline > updateTask.ParentTask.Deadline)))
+            {
+                throw new WrongDateException(400, "Deadline is uncorrect");
             }
 
             updateTask.Name = task.Name;
