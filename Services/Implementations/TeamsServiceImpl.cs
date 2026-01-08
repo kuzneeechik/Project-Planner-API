@@ -53,11 +53,17 @@ namespace Project_Planner_API.Services.Implementations
 
             var student = await _context.Students
                 .Include(s => s.Subjects)
+                .Include(s => s.Tasks)
                 .FirstOrDefaultAsync(s => s.Id == studentId);
 
             if (student == null)
             {
                 throw new NotFoundException(404, "Student not found");
+            }
+
+            for (int i = 0; i < student.Tasks.Count; i++)
+            {
+                student.Tasks[i].ResponsibleStudents.Remove(student);
             }
 
             subject.Team.Remove(student);
